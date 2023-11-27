@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import AVFoundation
 
 class ViewController: UIViewController {
     
@@ -20,6 +21,7 @@ class ViewController: UIViewController {
         "Hard": (12),
     ]
     
+    var audioPlayer : AVAudioPlayer!
     var timer: Timer?
     var totalTime = 0.0
     var secondsPassed = 0.0
@@ -30,7 +32,7 @@ class ViewController: UIViewController {
         
         let hardness = sender.currentTitle! //Soft, Medium, Hard
         totalTime = Double(eggTimes[hardness]!)
-        titleLabel.text = "Cooking..."
+        titleLabel.text = "Cooking \(hardness)..."
         /* currentTitle could be 'nil' if IBAction was linked to another button that did not have a title.
          Thus the default data type is an optional String denoted by 'String?'
          However, in this case we know that we linked the IBAction specifically to 3 buttons with titles.
@@ -43,7 +45,7 @@ class ViewController: UIViewController {
          the result will be 'nil'
          Therefore add an explamation to the calling of the dictionary value using the key provided from hardness that
          we made not optional in previous line of code*/
-        
+
         startTimer()
         
         
@@ -59,8 +61,14 @@ class ViewController: UIViewController {
                     self.cookingProgress.progress = percentageProgress
                 } else {
                     timer.invalidate() // Stop the timer when the countdown reaches 0
-                    cookingProgress.progressTintColor = UIColor.systemGreen
-                    titleLabel.text = "DONE!"
+                    
+                    cookingProgress.progressTintColor = UIColor.systemGreen // change the progress bar to a green colour to show completion                    
+                    titleLabel.text = "DONE!" // change title to show to user done cooking.
+
+                    
+                    let soundUrl = Bundle.main.url(forResource: "alarm_sound", withExtension: "mp3") //Think of setting up stereo system
+                    audioPlayer = try! AVAudioPlayer(contentsOf: soundUrl!) // Think of putting disc in stereo system
+                    audioPlayer.play() //Think of pressing play of stereosystem with disc set up.
                 }
             }
         }
